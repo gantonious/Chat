@@ -49,14 +49,24 @@ class LoginViewModel {
     var loginStatus: Observable<Content<User>> {
         return loginAttempts
             .asObservable()
-            .filter { c in c != nil }
-            .map { c in c!}
-            .flatMap { c in
-                Auth.reactiveAuth()
-                    .signIn(withEmail: c.email, withPassword: c.password)
-                    .map { r in User(email: r.user.email!) }
-                    .wrapAsContent()
-            }
+            .flatMapLatest { c in self.authenticate(with: c) }
+    }
+    
+    func authenticate(with creds: LoginCredentials?) -> Observable<Content<User>> {
+        if let currUser = Auth.auth().currentUser {
+            return Observable
+                .just(User(email: currUser.email!))
+                .wrapAsContent()
+        }
+        
+        if let creds = creds {
+            return Auth.reactiveAuth()
+                .signIn(withEmail: creds.email, withPassword: creds.password)
+                .map { r in User(email: r.user.email!) }
+                .wrapAsContent()
+        }
+        
+        fatalError()
     }
     
     func login(with credentials: LoginCredentials) {

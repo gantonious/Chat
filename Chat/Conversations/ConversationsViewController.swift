@@ -43,6 +43,10 @@ class ConversationsViewController: UITableViewController {
             .disposed(by: disposeBag)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        print("appeared")
+    }
+    
     @objc func didRefresh() {
         ConversationService()
             .getConversations()

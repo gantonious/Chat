@@ -71,7 +71,9 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         buildViews()
-        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
         loginViewModel
             .loginStatus
             .subscribe(onNext: { self.handleLoginResult(loginResult: $0) })
