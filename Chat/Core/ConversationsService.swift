@@ -26,7 +26,7 @@ struct Conversation {
 }
 
 let fakeConversations = [
-    Conversation(name: "David Skrundz", participants: ["g", "d"], latestMessage: "I love steve")
+    Conversation(name: "David Skrundz", participants: ["g", "d"], latestMessage: "Hi im david")
 ]
 
 class ConversationService {
