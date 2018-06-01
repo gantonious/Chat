@@ -30,6 +30,13 @@ class LoginViewController: UIViewController {
         return label
     }()
     
+    let loadingIndicator: UIActivityIndicatorView = {
+        let activityIndicatorView = UIActivityIndicatorView()
+        activityIndicatorView.activityIndicatorViewStyle = .whiteLarge
+        activityIndicatorView.alpha = 0
+        return activityIndicatorView
+    }()
+    
     let emailTextView: UITextField = {
         let textView = UITextField()
         textView.autocapitalizationType = .none
@@ -61,7 +68,8 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         buildViews()
         
-        loginViewModel.loginSuccess
+        loginViewModel
+            .loginStatus
             .subscribe(onNext: { self.handleLoginResult(loginResult: $0) })
             .disposed(by: disposeBag)
     }
@@ -69,11 +77,33 @@ class LoginViewController: UIViewController {
     private func handleLoginResult(loginResult: Content<User>) {
         switch(loginResult) {
             case .success(let user):
+                stopLoading()
+                let nextViewController = ConversationsViewController.createNavigationController()
+                dismiss(animated: true)
+                show(nextViewController, sender: self)
                 print(user)
             case .error(let error):
+                stopLoading()
                 print(error)
             case .loading:
+                startLoading()
                 print("🔄 loading")
+        }
+    }
+    
+    private func startLoading() {
+        UIView.animate(withDuration: 0.2) {
+            self.emailTextView.alpha = 0
+            self.passwordTextView.alpha = 0
+            self.loadingIndicator.alpha = 1
+        }
+    }
+    
+    private func stopLoading() {
+        UIView.animate(withDuration: 0.2) {
+            self.emailTextView.alpha = 1
+            self.passwordTextView.alpha = 1
+            self.loadingIndicator.alpha = 0
         }
     }
 }
@@ -85,6 +115,7 @@ extension LoginViewController {
         view.backgroundColor = .from(hex: "#A25AFF")
         view.addSubview(chatLogoImageview)
         view.addSubview(chatLabel)
+        view.addSubview(loadingIndicator)
         view.addSubview(emailTextView)
         view.addSubview(passwordTextView)
         view.addSubview(loginButton)
@@ -98,6 +129,11 @@ extension LoginViewController {
         chatLabel
             .alignCenterX(to: safeBounds.centerXAnchor)
             .anchorTop(to: chatLogoImageview.bottomAnchor, withConstant: -5)
+            .done()
+        
+        loadingIndicator
+            .alignCenterX(to: safeBounds.centerXAnchor)
+            .anchorTop(to: chatLabel.bottomAnchor, withConstant: 60)
             .done()
         
         emailTextView

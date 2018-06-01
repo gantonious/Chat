@@ -46,7 +46,7 @@ extension Observable  {
 class LoginViewModel {
     private let loginAttempts = BehaviorSubject<LoginCredentials?>(value: nil)
     
-    var loginSuccess: Observable<Content<User>> {
+    var loginStatus: Observable<Content<User>> {
         return loginAttempts
             .asObservable()
             .filter { c in c != nil }
