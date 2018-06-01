@@ -33,6 +33,7 @@ class ConversationService {
     func getConversations() -> Observable<Content<[Conversation]>> {
         return Observable
             .just(fakeConversations)
+            .delay(2, scheduler: MainScheduler.instance)
             .wrapAsContent()
     }
 }

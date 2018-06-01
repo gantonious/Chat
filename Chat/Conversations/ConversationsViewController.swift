@@ -24,6 +24,8 @@ class ConversationsViewController: UITableViewController {
 //        navController.navigationBar.barStyle = .black
 //        navController.navigationBar.largeTitleTextAttributes = [NSAttributedStringKey.foregroundColor:UIColor.white]
 //        navController.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor:UIColor.white]
+        
+
         return navController
     }
     
@@ -31,6 +33,17 @@ class ConversationsViewController: UITableViewController {
         navigationItem.title = "Conversations"
         tableView.register(ConversationViewCell.self, forCellReuseIdentifier: conversationCellIdentifier)
         
+        self.refreshControl = UIRefreshControl()
+        self.refreshControl?.addTarget(self, action: #selector(didRefresh), for: .valueChanged)
+        tableView.refreshControl = refreshControl!
+        
+        ConversationService()
+            .getConversations()
+            .subscribe(onNext: { self.handleConversationContent(conversationContent: $0) })
+            .disposed(by: disposeBag)
+    }
+    
+    @objc func didRefresh() {
         ConversationService()
             .getConversations()
             .subscribe(onNext: { self.handleConversationContent(conversationContent: $0) })
@@ -42,8 +55,10 @@ class ConversationsViewController: UITableViewController {
             case .success(let conversations):
                 print("good")
                 updateConversations(conversations: conversations)
+                refreshControl?.endRefreshing()
             case .error(let error):
                 print(error)
+                refreshControl?.endRefreshing()
             case .loading:
                 print("loading")
         }
