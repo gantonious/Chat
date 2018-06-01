@@ -9,7 +9,14 @@
 import UIKit
 
 class ConversationsViewController: UITableViewController {
-    static func createNavigationController() -> UINavigationController {
-        return UINavigationController(rootViewController: ConversationsViewController())
+    
+    static func createNavigationController() -> UIViewController {
+        let navController = UINavigationController(rootViewController: ConversationsViewController())
+        navController.navigationBar.prefersLargeTitles = true
+        return navController
+    }
+    
+    override func viewDidLoad() {
+        navigationItem.title = "Conversations"
     }
 }
