@@ -15,9 +15,17 @@ class LoginViewController: UIViewController {
     let disposeBag = DisposeBag()
     let loginViewModel = LoginViewModel()
     
+    let chatLogoImageview: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "ChatLogo")!
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
     let chatLabel: UILabel = {
         let label = UILabel()
         label.text = "Chat"
+        label.textColor = .white
         label.font = UIFont.systemFont(ofSize: 40, weight: .ultraLight)
         return label
     }()
@@ -42,7 +50,6 @@ class LoginViewController: UIViewController {
     let loginButton: UIButton = {
         let button = UIButton()
         button.setTitle("Login", for: .normal)
-        button.setTitleColor(.black, for: .normal)
         button.addTarget(self, action: #selector(didClickLoginButton), for: .touchUpInside)
         return button
     }()
@@ -75,15 +82,22 @@ extension LoginViewController {
     private func buildViews() {
         let safeBounds = view.safeAreaLayoutGuide
         
-        //view.backgroundColor = .red
+        view.backgroundColor = .from(hex: "#A25AFF")
+        view.addSubview(chatLogoImageview)
         view.addSubview(chatLabel)
         view.addSubview(emailTextView)
         view.addSubview(passwordTextView)
         view.addSubview(loginButton)
         
+        chatLogoImageview
+            .alignCenterX(to: safeBounds.centerXAnchor)
+            .with(height: 200)
+            .anchorTop(to: safeBounds.topAnchor, withConstant: 100)
+            .done()
+        
         chatLabel
             .alignCenterX(to: safeBounds.centerXAnchor)
-            .anchorTop(to: safeBounds.topAnchor, withConstant: 175)
+            .anchorTop(to: chatLogoImageview.bottomAnchor, withConstant: -5)
             .done()
         
         emailTextView
