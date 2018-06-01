@@ -61,6 +61,10 @@ class LoginViewController: UIViewController {
         return button
     }()
     
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
+    }
+    
     @objc func didClickLoginButton() {
         loginViewModel.login(with: LoginCredentials(email: emailTextView.text!, password: passwordTextView.text!))
     }
