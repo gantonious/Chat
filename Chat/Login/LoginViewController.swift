@@ -7,8 +7,20 @@
 //
 
 import UIKit
+import RxSwift
+import FirebaseAuth
 
 class LoginViewController: UIViewController {
+    
+    let disposeBag = DisposeBag()
+    let loginViewModel = LoginViewModel()
+    
+    let chatLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Chat"
+        label.font = UIFont.systemFont(ofSize: 40, weight: .ultraLight)
+        return label
+    }()
     
     let emailTextView: UITextField = {
         let textView = UITextField()
@@ -31,25 +43,53 @@ class LoginViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Login", for: .normal)
         button.setTitleColor(.black, for: .normal)
+        button.addTarget(self, action: #selector(didClickLoginButton), for: .touchUpInside)
         return button
     }()
     
-    override func viewDidLoad() {
-        buildViews()
+    @objc func didClickLoginButton() {
+        loginViewModel.login(with: LoginCredentials(email: emailTextView.text!, password: passwordTextView.text!))
     }
     
+    override func viewDidLoad() {
+        buildViews()
+        
+        loginViewModel.loginSuccess
+            .subscribe(onNext: { self.handleLoginResult(loginResult: $0) })
+            .disposed(by: disposeBag)
+    }
+    
+    private func handleLoginResult(loginResult: Content<User>) {
+        switch(loginResult) {
+            case .success(let user):
+                print(user)
+            case .error(let error):
+                print(error)
+            case .loading:
+                print("🔄 loading")
+        }
+    }
+}
+
+extension LoginViewController {
     private func buildViews() {
         let safeBounds = view.safeAreaLayoutGuide
         
         //view.backgroundColor = .red
+        view.addSubview(chatLabel)
         view.addSubview(emailTextView)
         view.addSubview(passwordTextView)
         view.addSubview(loginButton)
         
+        chatLabel
+            .alignCenterX(to: safeBounds.centerXAnchor)
+            .anchorTop(to: safeBounds.topAnchor, withConstant: 175)
+            .done()
+        
         emailTextView
             .constrainWidth(to: safeBounds.widthAnchor, multiplier: 0.7)
             .alignCenterX(to: safeBounds.centerXAnchor)
-            .anchorTop(to: safeBounds.topAnchor, withConstant: 275)
+            .anchorTop(to: chatLabel.bottomAnchor, withConstant: 40)
             .done()
         
         passwordTextView

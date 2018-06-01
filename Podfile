@@ -7,6 +7,7 @@ target 'Chat' do
 
   # Pods for Chat
   pod 'Firebase/Core'
+  pod 'Firebase/Auth'
   pod 'RxSwift',    '~> 4.0'
   pod 'RxCocoa',    '~> 4.0'
 
