@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import FirebaseAuth
+import FirebaseDatabase
 
 class LoginViewController: UIViewController {
     
@@ -74,6 +75,11 @@ class LoginViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        DatabaseUser
+            .getAll()
+            .subscribe(onSuccess: { users in print("USERS: \(users)") })
+            .disposed(by: disposeBag)
+                
         loginViewModel
             .loginStatus
             .subscribe(onNext: { self.handleLoginResult(loginResult: $0) })

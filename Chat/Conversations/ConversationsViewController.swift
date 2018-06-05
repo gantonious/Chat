@@ -8,6 +8,7 @@
 
 import UIKit
 import RxSwift
+import FirebaseAuth
 
 class ConversationsViewController: UITableViewController {
     let conversationCellIdentifier = "CONVERSATION_CELL"
@@ -31,10 +32,13 @@ class ConversationsViewController: UITableViewController {
     
     override func viewDidLoad() {
         navigationItem.title = "Conversations"
+        let logoutItem = UIBarButtonItem.init(barButtonSystemItem: .done, target: self, action: #selector(userDidLogout))
+        navigationItem.setRightBarButton(logoutItem, animated: false)
+        
         tableView.register(ConversationViewCell.self, forCellReuseIdentifier: conversationCellIdentifier)
         
         self.refreshControl = UIRefreshControl()
-        self.refreshControl?.addTarget(self, action: #selector(didRefresh), for: .valueChanged)
+        self.refreshControl?.addTarget(self, action: #selector(userDidRefresh), for: .valueChanged)
         tableView.refreshControl = refreshControl!
         
         ConversationService()
@@ -47,11 +51,17 @@ class ConversationsViewController: UITableViewController {
         print("appeared")
     }
     
-    @objc func didRefresh() {
+    @objc func userDidRefresh() {
         ConversationService()
             .getConversations()
             .subscribe(onNext: { self.handleConversationContent(conversationContent: $0) })
             .disposed(by: disposeBag)
+    }
+    
+    @objc func userDidLogout() {
+        try? Auth.auth().signOut()
+        dismiss(animated: true)
+        show(LoginViewController(), sender: self)
     }
     
     func handleConversationContent(conversationContent: Content<[Conversation]>) {

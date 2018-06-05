@@ -52,11 +52,6 @@ extension UIView {
             .anchorTrailing(to: anchor.trailingAnchor, withConstant: c)
     }
     
-    func fillScreenWidth(withConstant c: CGFloat = 0) -> UIView {
-        self.translatesAutoresizingMaskIntoConstraints = false
-        return self.with(width: UIScreen.main.bounds.width - (2 * c))
-    }
-    
     func fillWidth(inside anchor: Anchorable, withConstant c: CGFloat = 0) -> UIView {
         self.translatesAutoresizingMaskIntoConstraints = false
         

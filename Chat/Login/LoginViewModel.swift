@@ -66,7 +66,7 @@ class LoginViewModel {
                 .wrapAsContent()
         }
         
-        fatalError()
+        return Observable.empty()
     }
     
     func login(with credentials: LoginCredentials) {

@@ -8,6 +8,7 @@
 
 import Foundation
 import RxSwift
+import FirebaseDatabase
 
 struct Conversation {
     let name: String
@@ -23,6 +24,25 @@ struct Conversation {
         self.participants = participants
         self.latestMessage = latestMessage
     }
+    
+    init(fromDict: [String : Any]) {
+        self.name = fromDict["conversationName"] as! String
+        self.participants = fromDict["participants"] as! [String]
+        self.latestMessage = ""
+    }
+    
+    func dataType() -> String {
+        return "conversations"
+    }
+    
+    func toDict() -> [String : Any] {
+        return [
+            "conversationName" : self.name,
+            "participants" : self.participants
+        ]
+    }
+    
+    
 }
 
 let fakeConversations = [
@@ -30,6 +50,8 @@ let fakeConversations = [
 ]
 
 class ConversationService {
+    let conversationsReference = DatabaseFactory.getReferenceTo(dataType: "conversations")
+    
     func getConversations() -> Observable<Content<[Conversation]>> {
         return Observable
             .just(fakeConversations)
