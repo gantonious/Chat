@@ -32,7 +32,7 @@ class ConversationsViewController: UITableViewController {
     
     override func viewDidLoad() {
         navigationItem.title = "Conversations"
-        let logoutItem = UIBarButtonItem.init(barButtonSystemItem: .done, target: self, action: #selector(userDidLogout))
+        let logoutItem = UIBarButtonItem.init(barButtonSystemItem: .compose, target: self, action: #selector(userDidLogout))
         navigationItem.setRightBarButton(logoutItem, animated: false)
         
         tableView.register(ConversationViewCell.self, forCellReuseIdentifier: conversationCellIdentifier)

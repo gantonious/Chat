@@ -13,7 +13,7 @@ protocol FirebaseObject {
     var id: String { get }
     static func getDataType() -> String
     init(from firebaseData: FirebaseData)
-    func asFirebaseData() -> FirebaseData
+    func asRawData() -> [String: Any]
 }
 
 struct FirebaseData {
@@ -58,7 +58,7 @@ extension FirebaseObject {
         return Self.getReferenceToSelf()
             .child(self.id)
             .asReactiveReference()
-            .update(rawData: self.asFirebaseData().rawData)
+            .update(rawData: self.asRawData())
     }
 
     static func observeAdditions() -> Observable<Self> {

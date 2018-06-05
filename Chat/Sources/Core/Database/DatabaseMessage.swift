@@ -19,3 +19,21 @@ struct DatabaseMessage {
     let timestamp: Int
     let messageType: MessageType
 }
+
+extension DatabaseMessage: FirebaseObject {
+    static func getDataType() -> String {
+        return "messages"
+    }
+    
+    init(from firebaseData: FirebaseData) {
+        self.id = firebaseData.id
+        self.fromId = firebaseData.rawData["fromId"] as! String
+        self.conversationId = firebaseData.rawData["conversationId"] as! String
+        self.timestamp = firebaseData.rawData["timestamp"] as! Int
+        self.messageType = .plainText(content: "message")
+    }
+    
+    func asRawData() -> [String : Any] {
+        return [:]
+    }
+}

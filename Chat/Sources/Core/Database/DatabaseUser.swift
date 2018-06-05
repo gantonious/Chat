@@ -28,11 +28,9 @@ extension DatabaseUser: FirebaseObject {
         self.email = firebaseData.rawData["email"] as? String ?? ""
     }
     
-    func asFirebaseData() -> FirebaseData {
-        let rawData = [
+    func asRawData() -> [String: Any] {
+        return [
             "email": self.email
         ]
-        
-        return FirebaseData(id: self.id, rawData: rawData)
     }
 }
