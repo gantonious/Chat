@@ -46,6 +46,19 @@ public class FirebaseDatabaseRxExtensions {
         .asSingle()
     }
     
+    public func update(rawData: [String: Any]) -> Single<DatabaseReference> {
+        return Single.create { observer in
+            self.databaseReference.updateChildValues(rawData) { (error, databaseReference) in
+                if let updateError = error {
+                    observer(.error(updateError))
+                } else {
+                    observer(.success(databaseReference))
+                }
+            }
+            return Disposables.create()
+        }
+
+    }
 //    public func observeAsList<T: FirebaseLoadable>() -> Observable<[T]> {
 //        return self.observe(eventOfType: .value)
 //            .map { dataSnapshot in

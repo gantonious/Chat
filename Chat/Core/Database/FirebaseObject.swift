@@ -10,6 +10,7 @@ import RxSwift
 import FirebaseDatabase
 
 protocol FirebaseObject {
+    var id: String { get }
     static func getDataType() -> String
     init(from firebaseData: FirebaseData)
     func asFirebaseData() -> FirebaseData
@@ -51,6 +52,13 @@ extension FirebaseObject {
                   .childrenAsFirebaseData()
                   .map { c in Self(from: c) }
             }
+    }
+    
+    func update() -> Single<DatabaseReference> {
+        return Self.getReferenceToSelf()
+            .child(self.id)
+            .asReactiveReference()
+            .update(rawData: self.asFirebaseData().rawData)
     }
 
     static func observeAdditions() -> Observable<Self> {

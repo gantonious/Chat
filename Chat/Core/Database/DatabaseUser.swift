@@ -8,17 +8,24 @@
 
 import Foundation
 
-struct DatabaseUser: FirebaseObject {
+struct DatabaseUser {
     let id: String
     let email: String
     
+    init(email: String) {
+        self.id = UUID.init().uuidString
+        self.email = email
+    }
+}
+
+extension DatabaseUser: FirebaseObject {
     static func getDataType() -> String {
         return "users"
     }
     
     init(from firebaseData: FirebaseData) {
         self.id = firebaseData.id
-        self.email = firebaseData.rawData["email"] as! String
+        self.email = firebaseData.rawData["email"] as? String ?? ""
     }
     
     func asFirebaseData() -> FirebaseData {
